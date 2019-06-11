@@ -1,0 +1,151 @@
+//Рализация двунаправленной очереди(дек)
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+	int value; 
+	struct node *next; 
+	struct node *prev; 
+} node;
+
+typedef struct list {
+	struct node *head; 
+	struct node *tail; 
+} list;
+
+// инициализация пустого списка 
+void init(list* l)
+{
+	l->head = NULL;
+	l->tail = NULL;
+}
+
+// проверка списка на пустоту
+int isEmpty(list* l)
+{
+	if((l->head == NULL) && (l->tail == NULL))
+		return 0;
+	return 1;
+}
+
+// вставка значения в конец списка, вернуть 0 если успешно
+int push_back(list* l, int value)
+{
+	node* tmp = malloc(sizeof(node));
+	tmp->value = value;
+	tmp->prev = NULL;
+	tmp->next = NULL;
+
+	// Если список пуст
+	if(l->head == NULL) {
+		l->head = tmp;
+		l->tail = tmp;
+		return 0;
+	}
+
+	else {
+		tmp->prev = l->tail;
+		l->tail->next = tmp;
+		l->tail = tmp;
+		return 0;
+	}
+	return 1;
+}
+
+// вставка значения в начало списка, вернуть 0 если успешно
+int push_front(list* l, int value)
+{
+	node* tmp = malloc(sizeof(node));
+	tmp->value = value;
+	tmp->prev = NULL;
+	tmp->next = NULL;
+
+	// Если список пуст
+	if(l->tail == NULL) {
+		l->head = tmp;
+		l->tail = tmp;
+		return 0;
+	}
+	
+	else {
+		tmp->next = l->head;
+		l->head->prev = tmp;
+		l->head = tmp;
+		return 0;
+	}
+	return 1;
+}
+
+//удаление значения из начала списка
+int pop_front(list* l)
+{
+	node *tmp;
+	int n = l->head->value;
+	tmp = l->head;
+	l->head = l->head->next;
+	free(tmp);
+	return(n);
+}
+
+//удаление значения из конца списка
+int pop_back(list* l)
+{
+	node *tmp;
+	int n = l->tail->value;
+	tmp = l->tail;
+	l->tail = l->tail->prev;
+	l->tail->next = NULL;
+	free(tmp);
+	return(n);
+}
+
+// вывести все значения из списка в прямом порядке(через пробел)
+void print(list* l)
+{
+	node*  tmp;
+	tmp = l->head;
+
+	while(tmp != NULL) {
+		printf("%d", tmp->value);
+		tmp = tmp->next;
+		if(tmp != NULL)
+			printf(" ");
+	}
+	printf("\n");
+}
+
+int main()
+{
+	int N, n, y;
+	list current;
+
+	init(&current);
+
+	scanf("%d", &N);
+
+	for(int i=0; i<N; ++i) {
+		scanf("%d", &n);
+		push_back(&current, n);
+	}
+
+	scanf("%d", &n);
+	push_back(&current, n);
+
+	print(&current);
+
+	scanf("%d", &n);
+	push_front(&current, n);
+
+	print(&current);
+
+	pop_front(&current);
+
+	print(&current);
+
+	pop_back(&current);
+
+	print(&current);
+
+	return 0;
+}
